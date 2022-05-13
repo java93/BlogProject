@@ -2,6 +2,7 @@ package kg.alatoo.blogproject.model;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -9,10 +10,11 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-    @Column(unique = true)
-    private String username;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
+    private String username;
+    private String password;
     @Lob
     private Blob photo;
 
@@ -82,6 +84,38 @@ public class User {
 
     public User setRoles(Set<Role> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
         return this;
     }
 }

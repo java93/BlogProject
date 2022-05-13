@@ -3,13 +3,17 @@ package kg.alatoo.blogproject.model;
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Blog {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 60)
     private String title;
+    @Column(length = 255)
+    private String description;
     @Column(columnDefinition = "TEXT")
     private String content;
     @Lob
@@ -69,6 +73,28 @@ public class Blog {
 
     public Blog setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blog blog = (Blog) o;
+        return Objects.equals(id, blog.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Blog setDescription(String description) {
+        this.description = description;
         return this;
     }
 }
