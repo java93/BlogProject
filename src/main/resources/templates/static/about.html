@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:insert="fragments::head(title='About Us')">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Xtra Blog</title>
@@ -17,7 +17,7 @@ https://templatemo.com/tm-553-xtra-blog
 -->
 </head>
 <body>
-	<header th:replace="header :: header" class="tm-header" id="tm-header">
+	<header th:replace="fragments :: header" class="tm-header" id="tm-header">
 
     </header>
     <div class="container-fluid">
