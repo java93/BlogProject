@@ -23,4 +23,9 @@ public class BlogCategory {
         this.category = category;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return category;
+    }
 }
