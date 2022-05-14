@@ -4,10 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Xtra Blog</title>
-	<link rel="stylesheet" href="fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
+	<link rel="stylesheet" th:href="@{/fontawesome/css/all.min.css}" href="/fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
 	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> <!-- https://fonts.google.com/ -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/templatemo-xtra-blog.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/templatemo-xtra-blog.css}" href="/css/templatemo-xtra-blog.css" rel="stylesheet">
 <!--
     
 TemplateMo 553 Xtra Blog
@@ -86,7 +86,7 @@ https://templatemo.com/tm-553-xtra-blog
                         <source src="video/wheat-field.mp4" type="video/mp4">							  
                         Your browser does not support the video tag.
                     </video>-->
-                    <img th:src="'data:image/jpg;base64, '+${@base64encoder.encodeToString(blog.photo.getBytes(0,blog.photo.length()))}" src="../static/img/img-01.jpg">
+                    <img th:src="'data:image/jpg;base64, '+${@base64encoder.encode(blog.photo)}" src="../static/img/img-01.jpg">
                 </div>
             </div>
             <div class="row tm-row">
@@ -119,7 +119,7 @@ https://templatemo.com/tm-553-xtra-blog
                             <hr class="tm-hr-primary tm-mb-45">
                             <div class="tm-comment tm-mb-45">
                                 <figure class="tm-comment-figure">
-                                    <img src="img/comment-1.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
+                                    <img src="/img/comment-1.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
                                     <figcaption class="tm-color-primary text-center">Mark Sonny</figcaption>
                                 </figure>
                                 <div>
@@ -139,7 +139,7 @@ https://templatemo.com/tm-553-xtra-blog
                                 <hr>
                                 <div class="tm-comment">
                                     <figure class="tm-comment-figure">
-                                        <img src="img/comment-2.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
+                                        <img src="/img/comment-2.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
                                         <figcaption class="tm-color-primary text-center">Jewel Soft</figcaption>    
                                     </figure>
                                     <p>
@@ -184,19 +184,19 @@ https://templatemo.com/tm-553-xtra-blog
                         <h2 class="tm-mb-40 tm-post-title tm-color-primary">Related Posts</h2>
                         <a href="#" class="d-block tm-mb-40">
                             <figure>
-                                <img src="img/img-02.jpg" alt="Image" class="mb-3 img-fluid">
+                                <img src="/img/img-02.jpg" alt="Image" class="mb-3 img-fluid">
                                 <figcaption class="tm-color-primary">Duis mollis diam nec ex viverra scelerisque a sit</figcaption>
                             </figure>
                         </a>
                         <a href="#" class="d-block tm-mb-40">
                             <figure>
-                                <img src="img/img-05.jpg" alt="Image" class="mb-3 img-fluid">
+                                <img src="/img/img-05.jpg" alt="Image" class="mb-3 img-fluid">
                                 <figcaption class="tm-color-primary">Integer quis lectus eget justo ullamcorper ullamcorper</figcaption>
                             </figure>
                         </a>
                         <a href="#" class="d-block tm-mb-40">
                             <figure>
-                                <img src="img/img-06.jpg" alt="Image" class="mb-3 img-fluid">
+                                <img src="/img/img-06.jpg" alt="Image" class="mb-3 img-fluid">
                                 <figcaption class="tm-color-primary">Nam lobortis nunc sed faucibus commodo</figcaption>
                             </figure>
                         </a>
@@ -213,7 +213,7 @@ https://templatemo.com/tm-553-xtra-blog
             </footer>
         </main>
     </div>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/templatemo-script.js"></script>
+    <script th:src="@{/js/jquery.min.js}" src="/js/jquery.min.js"></script>
+    <script th:src="@{/js/templatemo-script.js}" src="/js/templatemo-script.js"></script>
 </body>
 </html>

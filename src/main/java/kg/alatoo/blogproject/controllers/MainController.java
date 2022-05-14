@@ -27,7 +27,7 @@ public class MainController {
 
     @GetMapping(
             produces = MediaType.IMAGE_JPEG_VALUE,
-            value = "blog-img/{blogId}"
+            path = "blog-img/{blogId}"
     )
     @ResponseBody
     public byte[] getImage(@PathVariable("blogId") Long blogId,HttpServletResponse response) {
