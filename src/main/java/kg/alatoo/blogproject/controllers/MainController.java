@@ -16,6 +16,8 @@ import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 @Controller
 public class MainController {
@@ -25,27 +27,23 @@ public class MainController {
 
     @GetMapping(
             produces = MediaType.IMAGE_JPEG_VALUE,
-            value = "get-img"
+            value = "blog-img/{blogId}"
     )
     @ResponseBody
-    public byte[] getImage(HttpServletResponse response) {
-        response.setHeader("Content-Type","image/jpeg"); // same as produces = "image/jpeg" in @GetMapping annotation
-        byte[] bytes = new byte[0];
-        try (InputStream inputStream = new FileInputStream("./src/main/resources/static/img/about-01.jpg")) {
-            System.out.println("inputStream = " + inputStream);
-//            assert inputStream != null;
-            bytes = inputStream.readAllBytes();
-        } catch (IOException e) {
+    public byte[] getImage(@PathVariable("blogId") Long blogId,HttpServletResponse response) {
+        Blob photo = blogRepository.findById(blogId).orElseThrow().getPhoto();
+        byte[] bytes;
+        try {
+            bytes = photo.getBytes(0, ((int) photo.length()));
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("bytes.length = " + bytes.length);
+        response.setHeader("TestHeader","Almambet");
         return bytes;
     }
 
     @GetMapping
-    public String home(
-            Model model,
-            HttpServletResponse response) {
+    public String home(Model model) {
         model.addAttribute("blogs",blogRepository.findAll());
         return "index";
     }

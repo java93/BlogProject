@@ -16,10 +16,14 @@ import org.springframework.context.annotation.Bean;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Executable;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @SpringBootApplication
 public class BlogProjectApplication {
@@ -109,7 +113,20 @@ public class BlogProjectApplication {
     }
 
     @Bean("base64encoder")
-    public Base64.Encoder base64() {
-        return Base64.getEncoder();
+    public Base64EncoderToString base64() {
+        Base64EncoderToString base64encoder = blob -> {
+            String base64;
+            try {
+                base64= Base64.getEncoder().encodeToString(blob.getBytes(0, (int) blob.length()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return base64;
+        };
+        return base64encoder;
     }
+}
+
+interface Base64EncoderToString{
+    public String encode(Blob blob);
 }
