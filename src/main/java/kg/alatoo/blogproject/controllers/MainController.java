@@ -2,23 +2,28 @@ package kg.alatoo.blogproject.controllers;
 
 import kg.alatoo.blogproject.model.Blog;
 import kg.alatoo.blogproject.model.repo.BlogRepository;
+import kg.alatoo.blogproject.services.BlobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @Controller
 public class MainController {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private BlobService blobService;
 
     @GetMapping(
             produces = MediaType.IMAGE_JPEG_VALUE,
@@ -49,6 +54,25 @@ public class MainController {
         model.addAttribute(blog);
 
         return "post";
+    }
+
+    @GetMapping("createpost")
+    public String createPost(Model model) {
+        Blog newPost = new Blog().setCreatedDate(LocalDateTime.now());
+        model.addAttribute("newPost",newPost);
+        return "createpost";
+    }
+
+    @PostMapping(value = "savepost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String savePost(@ModelAttribute Blog blog, @RequestPart("photofile") MultipartFile photo) {
+        try {
+            Blob blob = blobService.getBlob(photo.getInputStream(), (int) photo.getSize());
+            blog.setPhoto(blob);
+            blogRepository.save(blog);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return "redirect:/";
     }
 
     @GetMapping("about")

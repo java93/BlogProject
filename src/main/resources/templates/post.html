@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="fragments::head(title=${blog.title})">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Xtra Blog</title>
-	<link rel="stylesheet" th:href="@{/fontawesome/css/all.min.css}" href="/fontawesome/css/all.min.css"> <!-- https://fontawesome.com/ -->
-	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> <!-- https://fonts.google.com/ -->
-    <link th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/templatemo-xtra-blog.css}" href="/css/templatemo-xtra-blog.css" rel="stylesheet">
-<!--
-    
-TemplateMo 553 Xtra Blog
-
-https://templatemo.com/tm-553-xtra-blog
-
--->
 </head>
 <body>
 	<header th:replace="fragments::header" class="tm-header" id="tm-header">
@@ -203,17 +189,11 @@ https://templatemo.com/tm-553-xtra-blog
                     </div>                    
                 </aside>
             </div>
-            <footer class="row tm-row">
-                <div class="col-md-6 col-12 tm-color-gray">
-                    Design: <a rel="nofollow" target="_parent" href="https://templatemo.com" class="tm-external-link">TemplateMo</a>
-                </div>
-                <div class="col-md-6 col-12 tm-color-gray tm-copyright">
-                    Copyright 2020 Xtra Blog Company Co. Ltd.
-                </div>
+            <footer th:replace="fragments::footer" class="row tm-row">
+
             </footer>
         </main>
     </div>
-    <script th:src="@{/js/jquery.min.js}" src="/js/jquery.min.js"></script>
-    <script th:src="@{/js/templatemo-script.js}" src="/js/templatemo-script.js"></script>
+    <th:block th:include="fragments::jsfiles"/>
 </body>
 </html>

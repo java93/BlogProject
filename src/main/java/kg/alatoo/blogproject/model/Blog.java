@@ -97,4 +97,15 @@ public class Blog {
         this.description = description;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Blog{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", content='" + content + '\'' +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }

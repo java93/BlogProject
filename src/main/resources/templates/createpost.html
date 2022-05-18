@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments::head(title='New Post')">
+    <meta charset="UTF-8">
+    <title>New Post</title>
+</head>
+<body>
+<header th:replace="fragments::header"></header>
+<div class="container-fluid">
+    <main class="tm-main">
+        <!-- Search form -->
+        <div class="row tm-row">
+            <div class="col-12">
+                <form method="POST" th:action="@{/savepost}" enctype="multipart/form-data" class="form-row tm-mb-80 tm-search-form" th:object="${newPost}">
+                    <input type="hidden" th:field="*{createdDate}">
+                    <input class="form-control" th:field="*{title}" type="text" placeholder="Title" required>
+                    <input type="file" name="photofile" id="photo" required>
+                    <textarea class="form-control" maxlength="255" th:field="*{description}" name="Content" type="text" placeholder="Post description" required></textarea>
+                    <textarea class="form-control" th:field="*{content}" name="Content" type="text" placeholder="Post details" required></textarea>
+                    <br>
+                    <button class="tm-search-button" type="submit">
+                        <i class="fas fa-ad tm-search-icon" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <footer th:replace="fragments::footer" class="row tm-row">
+
+        </footer>
+    </main>
+</div>
+<th:block th:include="fragments::jsfiles"/>
+</body>
+</html>
