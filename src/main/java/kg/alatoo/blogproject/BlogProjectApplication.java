@@ -4,14 +4,15 @@ import kg.alatoo.blogproject.model.Blog;
 import kg.alatoo.blogproject.model.Role;
 import kg.alatoo.blogproject.model.User;
 import kg.alatoo.blogproject.model.repo.BlogRepository;
-import kg.alatoo.blogproject.model.repo.RoleRepository;
-import kg.alatoo.blogproject.model.repo.UserRepository;
 import kg.alatoo.blogproject.services.BlobService;
+import kg.alatoo.blogproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,9 +21,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 @SpringBootApplication
 public class BlogProjectApplication {
@@ -36,9 +35,7 @@ public class BlogProjectApplication {
     @Autowired
     BlobService blobService;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
+    UserService userService;
 
     @Bean
     public CommandLineRunner bootstrap() {
@@ -53,17 +50,19 @@ public class BlogProjectApplication {
                 User admin = new User().setFirstName("Almambet")
                         .setLastName("Totoev")
                         .setUsername("almambet")
+                        .setPassword("almambet")
                         .setRoles(Set.of(role_admin))
                         .setPhoto(blobService.getBlob(new FileInputStream(userPhotoMan), ((int) userPhotoMan.length())));
 
                 User user = new User().setFirstName("Mukhammed")
                         .setLastName("Akzhol uulu")
                         .setUsername("mukhammed")
+                        .setPassword("mukhammed")
                         .setRoles(Set.of(role_user))
                         .setPhoto(blobService.getBlob(new FileInputStream(userPhotoMan), ((int) userPhotoMan.length())));
 
-                roleRepository.saveAll(Set.of(role_admin, role_user));
-                userRepository.saveAll(List.of(admin, user));
+                userService.saveUser(user);
+                userService.saveUser(admin);
 
 
                 File img01 = new File("./src/main/resources/static/img/img-01.jpg");
@@ -72,9 +71,9 @@ public class BlogProjectApplication {
                 File img04 = new File("./src/main/resources/static/img/img-04.jpg");
 
                 String description = "You are allowed to convert this template as any kind of CMS theme or template for your custom website builder. You can also use this for your clients. Thank you for choosing us.";
-                String content = "This is a description of the video post. You can also have an image instead of the video. You can free download Xtra Blog Template from TemplateMo website. Phasellus maximus quis est sit amet maximus. Vestibulum vel rutrum lorem, ac sodales augue. Aliquam erat volutpat. Duis lectus orci, blandit in arcu est, elementum tincidunt lectus. Praesent vel justo tempor, varius lacus a, pharetra lacus.\n" +
-                        "\n" +
-                        "Duis pretium efficitur nunc. Mauris vehicula nibh nisi. Curabitur gravida neque dignissim, aliquet nulla sed, condimentum nulla. Pellentesque id venenatis quam, id cursus velit. Fusce semper tortor ac metus iaculis varius. Praesent aliquam ex vel lectus ornare tristique. Nunc et eros quis enim feugiat tincidunt et vitae dui.";
+                String content = """
+                        This is a description of the video post. You can also have an image instead of the video. You can free download Xtra Blog Template from TemplateMo website. Phasellus maximus quis est sit amet maximus. Vestibulum vel rutrum lorem, ac sodales augue. Aliquam erat volutpat. Duis lectus orci, blandit in arcu est, elementum tincidunt lectus. Praesent vel justo tempor, varius lacus a, pharetra lacus.
+                        Duis pretium efficitur nunc. Mauris vehicula nibh nisi. Curabitur gravida neque dignissim, aliquet nulla sed, condimentum nulla. Pellentesque id venenatis quam, id cursus velit. Fusce semper tortor ac metus iaculis varius. Praesent aliquam ex vel lectus ornare tristique. Nunc et eros quis enim feugiat tincidunt et vitae dui.""";
 
                 String title1 = "Simple and useful HTML layout";
                 String title2 = "Multi-purpose blog template";
@@ -113,7 +112,7 @@ public class BlogProjectApplication {
 
     @Bean("base64encoder")
     public Base64EncoderToString base64() {
-        Base64EncoderToString base64encoder = blob -> {
+        return blob -> {
             String base64;
             try {
                 base64= Base64.getEncoder().encodeToString(blob.getBytes(0, (int) blob.length()));
@@ -122,10 +121,9 @@ public class BlogProjectApplication {
             }
             return base64;
         };
-        return base64encoder;
     }
 }
 
 interface Base64EncoderToString{
-    public String encode(Blob blob);
+    String encode(Blob blob);
 }

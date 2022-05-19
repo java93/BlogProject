@@ -21,7 +21,7 @@ public class User {
     @OneToMany(mappedBy = "createdBy")
     private Set<Blog> createdBlogs;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public Long getId() {
