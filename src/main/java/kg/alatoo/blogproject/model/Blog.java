@@ -1,5 +1,7 @@
 package kg.alatoo.blogproject.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.LocalDateTime;
@@ -12,12 +14,12 @@ public class Blog {
     private Long id;
     @Column(length = 60)
     private String title;
-    @Column(length = 255)
+    @Column
     private String description;
     @Column(columnDefinition = "TEXT")
     private String content;
     @Lob
-    private Blob photo;
+    private byte[] photo;
     private LocalDateTime createdDate;
     @ManyToOne
     private User createdBy;
@@ -49,11 +51,11 @@ public class Blog {
         return this;
     }
 
-    public Blob getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public Blog setPhoto(Blob photo) {
+    @Transactional    public Blog setPhoto(byte[] photo) {
         this.photo = photo;
         return this;
     }

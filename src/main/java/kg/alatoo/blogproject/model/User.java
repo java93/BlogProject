@@ -1,11 +1,11 @@
 package kg.alatoo.blogproject.model;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "blog_user")
 public class User {
     @Id
     @GeneratedValue
@@ -16,7 +16,7 @@ public class User {
     private String username;
     private String password;
     @Lob
-    private Blob photo;
+    private byte[] photo;
 
     @OneToMany(mappedBy = "createdBy")
     private Set<Blog> createdBlogs;
@@ -60,11 +60,11 @@ public class User {
         return this;
     }
 
-    public Blob getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public User setPhoto(Blob photo) {
+    public User setPhoto(byte[] photo) {
         this.photo = photo;
         return this;
     }

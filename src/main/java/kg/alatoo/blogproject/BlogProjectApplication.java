@@ -4,21 +4,16 @@ import kg.alatoo.blogproject.model.Blog;
 import kg.alatoo.blogproject.model.Role;
 import kg.alatoo.blogproject.model.User;
 import kg.alatoo.blogproject.model.repo.BlogRepository;
-import kg.alatoo.blogproject.services.BlobService;
 import kg.alatoo.blogproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Set;
@@ -33,8 +28,6 @@ public class BlogProjectApplication {
     @Autowired
     BlogRepository blogRepository;
     @Autowired
-    BlobService blobService;
-    @Autowired
     UserService userService;
 
     @Bean
@@ -47,22 +40,9 @@ public class BlogProjectApplication {
                 Role role_admin = new Role("ROLE_ADMIN");
                 Role role_user = new Role("ROLE_USER");
 
-                User admin = new User().setFirstName("Almambet")
-                        .setLastName("Totoev")
-                        .setUsername("almambet")
-                        .setPassword("almambet")
-                        .setRoles(Set.of(role_admin))
-                        .setPhoto(blobService.getBlob(new FileInputStream(userPhotoMan), ((int) userPhotoMan.length())));
+                User admin = saveUser("Almambet", "Totoev", "almambet", role_admin, userPhotoMan);
 
-                User user = new User().setFirstName("Mukhammed")
-                        .setLastName("Akzhol uulu")
-                        .setUsername("mukhammed")
-                        .setPassword("mukhammed")
-                        .setRoles(Set.of(role_user))
-                        .setPhoto(blobService.getBlob(new FileInputStream(userPhotoMan), ((int) userPhotoMan.length())));
-
-                userService.saveUser(user);
-                userService.saveUser(admin);
+                User user = saveUser("Mukhammed", "Akzhol uulu", "mukhammed", role_user, userPhotoMan);
 
 
                 File img01 = new File("./src/main/resources/static/img/img-01.jpg");
@@ -84,13 +64,20 @@ public class BlogProjectApplication {
                 saveBlog(title2,description,content,img02,admin);
                 saveBlog(title3,description,content,img03,user);
                 saveBlog(title4,description,content,img04,user);
+            }
 
-                /*Blog next = blogRepository.findAll().iterator().next();
-                Blob photo = next.getPhoto();
-                byte[] bytes = photo.getBytes(0, (int) photo.length());
-                try (FileOutputStream fileOutputStream = new FileOutputStream("test.jpg")) {
-                    fileOutputStream.write(bytes);
-                }*/
+            private User saveUser(String firstname, String lastname, String username_password, Role role_user, File photo) throws IOException {
+                try(FileInputStream fileInputStream = new FileInputStream(photo)) {
+                    User user = new User().setFirstName(firstname)
+                            .setLastName(lastname)
+                            .setUsername(username_password)
+                            .setPassword(username_password)
+                            .setRoles(Set.of(role_user))
+                            .setPhoto(fileInputStream.readAllBytes());
+
+                    userService.saveUser(user);
+                    return user;
+                }
             }
 
             private void saveBlog(String title,String description, String content,File img01,User author) throws IOException {
@@ -103,7 +90,7 @@ public class BlogProjectApplication {
                             .setDescription(description)
                             .setCreatedDate(LocalDateTime.now())
                             .setCreatedBy(author)
-                            .setPhoto(blobService.getBlob(fileInputStream, ((int) img01.length())));
+                            .setPhoto(fileInputStream.readAllBytes());
                 }
                 blogRepository.save(blog1);
             }
@@ -112,18 +99,10 @@ public class BlogProjectApplication {
 
     @Bean("base64encoder")
     public Base64EncoderToString base64() {
-        return blob -> {
-            String base64;
-            try {
-                base64= Base64.getEncoder().encodeToString(blob.getBytes(0, (int) blob.length()));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            return base64;
-        };
+        return bytes -> Base64.getEncoder().encodeToString(bytes);
     }
 }
 
 interface Base64EncoderToString{
-    String encode(Blob blob);
+    String encode(byte[] bytes);
 }
