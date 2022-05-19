@@ -15,10 +15,18 @@
         <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="tm-site-header">
+        <div sec:authorize="isAuthenticated()" th:with="user=${@userService.getUserByUsername(#authentication.getName())}" class="tm-site-header">
+            <div class="mb-3 mx-auto tm-site-logo">
+                <img th:src="'data:image/jpg;base64, '+${@base64encoder.encode(user.photo)}" src="/img/comment-1.jpg" th:alt="${user.username}" alt="Image" class="mb-2 rounded-circle img-thumbnail">
+            </div>
+            <h1 class="text-center"  th:text="${user.firstName + ' ' + user.lastName}">Xtra Blog</h1>
+        </div>
+
+        <div sec:authorize="isAnonymous()" class="tm-site-header">
             <div class="mb-3 mx-auto tm-site-logo"><i class="fas fa-times fa-2x"></i></div>
             <h1 class="text-center">Xtra Blog</h1>
         </div>
+
         <nav class="tm-nav" id="tm-nav">
             <ul>
                 <li class="tm-nav-item" th:classappend="${#httpServletRequest.requestURI== #httpServletRequest.contextPath + '/'} ? active"><a th:href="@{/}" href="index.html" class="tm-nav-link">
