@@ -42,12 +42,12 @@
                     </p>
                     <div class="d-flex justify-content-between tm-pt-45">
                         <span class="tm-color-primary">Travel . Events</span>
-                        <span class="tm-color-primary">June 24, 2020</span>
+                        <span th:text="${#temporals.format(blog.createdDate,'MMM dd, yyyy')}" class="tm-color-primary">June 24, 2020</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
                         <span>36 comments</span>
-                        <span>by Admin Nat</span>
+                        <span th:text="'by ' + ${blog.createdBy.firstName + ' ' + blog.createdBy.lastName}">by Admin Nat</span>
                     </div>
                 </article>
             </div>

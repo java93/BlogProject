@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +29,10 @@
                     <i class="fas fa-pen"></i>
                     Create Post
                 </a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="tm-nav-item" th:classappend="${#httpServletRequest.requestURI== #httpServletRequest.contextPath + '/admin'} ? active"><a th:href="@{/admin}" href="post.html" class="tm-nav-link">
+                    <i class="fas fa-ad"></i>
+                    Admin Panel
+                </a></li>
                 <li class="tm-nav-item" th:classappend="${#httpServletRequest.requestURI== #httpServletRequest.contextPath + '/about'} ? active"><a th:href="@{/about}" href="static/about.html" class="tm-nav-link">
                     <i class="fas fa-users"></i>
                     About Xtra
@@ -39,6 +43,8 @@
                 </a></li>
             </ul>
         </nav>
+        <div sec:authorize="isAnonymous()"><a th:href="@{/login}">Login</a></div>
+        <div sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></div>
         <div class="tm-mb-65">
             <a rel="nofollow" href="https://fb.com/templatemo" class="tm-social-link">
                 <i class="fab fa-facebook tm-social-icon"></i>

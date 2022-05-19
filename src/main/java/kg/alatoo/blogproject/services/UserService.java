@@ -32,6 +32,10 @@ public class UserService implements UserDetailsService {
         return new MyUserPrincipal(user);
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));

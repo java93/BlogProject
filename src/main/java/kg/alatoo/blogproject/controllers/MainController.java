@@ -3,6 +3,7 @@ package kg.alatoo.blogproject.controllers;
 import kg.alatoo.blogproject.model.Blog;
 import kg.alatoo.blogproject.model.repo.BlogRepository;
 import kg.alatoo.blogproject.services.BlobService;
+import kg.alatoo.blogproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -24,6 +26,9 @@ public class MainController {
 
     @Autowired
     private BlobService blobService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping(
             produces = MediaType.IMAGE_JPEG_VALUE,
@@ -64,15 +69,26 @@ public class MainController {
     }
 
     @PostMapping(value = "savepost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String savePost(@ModelAttribute Blog blog, @RequestPart("photofile") MultipartFile photo) {
+    public String savePost(
+            @ModelAttribute Blog blog,
+            @RequestPart("photofile") MultipartFile photo,
+            Principal principal
+    ) {
         try {
             Blob blob = blobService.getBlob(photo.getInputStream(), (int) photo.getSize());
-            blog.setPhoto(blob);
+            blog.setPhoto(blob)
+                    .setCreatedBy(userService.getUserByUsername(principal.getName()));
             blogRepository.save(blog);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/admin")
+    @ResponseBody
+    public String adminPanel() {
+        return "There should be admin panel";
     }
 
     @GetMapping("about")
